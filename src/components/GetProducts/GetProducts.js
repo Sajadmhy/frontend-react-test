@@ -1,11 +1,11 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { LOAD_PRODUCTS } from '../../graphql/queries.js';
-import Dashboard from '../Dashboard/Dashboard.jsx';
+import Dashboard from '../Dashboard/Dashboard';
 import "./GetProducts.css";
 const GetProducts = () => {
 
-  const { error, loading, data } = useQuery(LOAD_PRODUCTS);
+  const { data } = useQuery(LOAD_PRODUCTS);
 
 
   return (
