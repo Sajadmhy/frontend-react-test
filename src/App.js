@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { 
+  ApolloClient,
+  InMemoryCache, 
+  ApolloProvider,
+  HttpLink,
+  from, 
+} from "@apollo/client";
+import {onError} from '@apollo/client/link/error';
+import React, { Component } from "react";
+import GetProducts from "./components/GetProducts/GetProducts";
+import URI from "./helpers/graphQLUri";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+//GraphQl logic
+const errorLink = onError(({ graphqlErrors, networkErrors }) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({message, location, path}) => {
+      return console.log(`GraphQl Error: ${message} in ${location} at ${path}`)
+    });
+  };
+});
+
+const link = from([
+  errorLink,
+  new HttpLink({ uri: URI })
+]);
+
+const client = new ApolloClient({
+  cache : new InMemoryCache(),
+  link : link
+});
+
+// Store App
+
+class App extends Component {
+  render() {
+    return (
+      <ApolloProvider client={client}>
+        <GetProducts />
+      </ApolloProvider>
+    );
+  };
+};
 
 export default App;
